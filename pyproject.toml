@@ -8,6 +8,7 @@ packages = [{include = "django_notification"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+django = "^5.0.7"
 
 
 [build-system]

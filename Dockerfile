@@ -4,9 +4,10 @@ RUN pip install poetry virtualenv
 
 WORKDIR /usr/src/app/
 
-COPY ./pyproject.toml .
+COPY . .
 
-RUN python3 -m venv .venv &&\
-    . .venv/bin/activate &&\
-    poetry install
+RUN virtualenv /opt/.venv && \
+    . /opt/.venv/bin/activate && \
+    poetry install 
 
+CMD ["/bin/bash", "cmd.sh"]
