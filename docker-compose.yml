@@ -1,0 +1,10 @@
+services:
+  django:
+    build:
+      context: .
+    command: tail -f /dev/null
+    container_name: django_notification
+    volumes:
+      - ./:/usr/src/app/
+    ports:
+      - 8000:8000
