@@ -17,8 +17,12 @@ from django.contrib import admin
 from django.urls import path
 
 from notification import views as notification_view
+from notification.consumers import NotificationConsumer
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', notification_view.notification_page, name="Notification View")
+]
+websocket_urlpatterns = [
+    path('ws/notifications/', NotificationConsumer.as_asgi(), name="Notification Consumer")
 ]

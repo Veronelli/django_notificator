@@ -1,2 +1,2 @@
 source /opt/.venv/bin/activate
-python manage.py runserver 0.0.0.0:8000
+uvicorn django_notification.asgi:application --port 8000 --workers 4 --log-level debug --reload
