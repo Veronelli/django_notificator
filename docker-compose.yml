@@ -5,5 +5,40 @@ services:
     build:
       context: .
     container_name: django_notification
+    command: uvicorn django_notification.asgi:application --host 0.0.0.0 --port 8000 --workers 4 --log-level debug --reload
     ports:
       - 8000:8000
+    depends_on:
+      - redis
+
+  rabbitmq:
+    image: rabbitmq:3.13.4-management-alpine
+    restart: always
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  redis:
+    image: redis:7.0.11-alpine
+    ports:
+      - 6379:6379
+
+  flower:
+    image: mher/flower
+    restart: always
+    ports:
+      - 5555:5555
+    environment:
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      - rabbitmq
+
+  celery:
+    container_name: celery
+    volumes:
+      - ./:/usr/src/app
+    restart: always
+    build:
+      context: .
+    command: celery --app=django_notification worker -l INFO -B 

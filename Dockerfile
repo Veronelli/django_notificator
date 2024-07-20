@@ -8,6 +8,5 @@ COPY . .
 
 RUN virtualenv /opt/.venv && \
     . /opt/.venv/bin/activate && \
-    poetry install 
-
-CMD ["/bin/bash", "cmd.sh"]
+    poetry install
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

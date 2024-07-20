@@ -1,7 +1,12 @@
 from django import forms
 from django.contrib import admin
+from django.http import HttpRequest, HttpResponseRedirect
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from django.urls import path
 
 from notification.models import Notification
+from notification.tasks import send_notification_task
 
 
 # Register your models here.
@@ -10,4 +15,28 @@ class SendNotificationForm(forms.Form):
     
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-    pass
+    add_form_template = 'admin/custom_add_form.html'
+    def add_view(self, request: HttpRequest, form_url = None, extra_context = None):
+        form = None
+        if request.method == 'POST':
+            form = SendNotificationForm(request.POST)
+            if form.is_valid():
+                message = form.cleaned_data["message"]
+                notification = Notification.objects.create(message=message)
+                print("Helloooooo AAAAAAAAAA")
+                
+                send_notification_task.delay(message)
+
+                return HttpResponseRedirect('../{}/'.format(notification.pk))
+        else:
+            form = SendNotificationForm()
+        new_context = self.get_changeform_initial_data(request)
+        new_context['form'] = form
+        return super().add_view(request, form_url, extra_context=new_context)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_url = [
+            path("send-notification/", self.admin_site.admin_view(self.add_view), name="send-notification"),
+        ]
+        return custom_url + urls
