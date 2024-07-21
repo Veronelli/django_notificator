@@ -14,7 +14,6 @@ channels = "^4.1.0"
 isort = "^5.13.2"
 celery = "^5.4.0"
 channels-redis = "^4.2.0"
-requests = "^2.32.3"
 
 
 [build-system]

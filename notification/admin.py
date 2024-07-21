@@ -16,14 +16,21 @@ class SendNotificationForm(forms.Form):
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
     add_form_template = 'admin/custom_add_form.html'
+    
+    def delete_view(self, request: HttpRequest, object_id: int, extra_context=None):
+        notification = Notification.objects.get(pk=object_id)
+        message = f'Removed item {object_id}, message"{notification.message}"'
+        if request.method == 'POST':
+            send_notification_task.delay(message)
+        
+        return super().delete_view(request, object_id, extra_context)
+    
     def add_view(self, request: HttpRequest, form_url = None, extra_context = None):
-        form = None
         if request.method == 'POST':
             form = SendNotificationForm(request.POST)
             if form.is_valid():
                 message = form.cleaned_data["message"]
                 notification = Notification.objects.create(message=message)
-                print("Helloooooo AAAAAAAAAA")
                 
                 send_notification_task.delay(message)
 
