@@ -2,12 +2,12 @@ from celery import shared_task
 import time
 
 @shared_task
-def task1(queue='celery'):
+def task(queue='celery'):
     time.sleep(3)
     return
 
 @shared_task
-def task2(queue='celery:1'):
+def task1(queue='celery:1'):
     time.sleep(3)
     return
 

@@ -1,5 +1,7 @@
-from celery import Celery
+from celery import Celery, chain, group
 from os import environ
+
+from newapp.tasks import task, task1, task2, task3
 
 environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_notification.settings')
 
@@ -18,4 +20,7 @@ app.conf.broker_transport_options = {
     'sep': ':',
     'queue_order_strategy': 'priority'
 }
+task_group = group(task1.s(), task2.s(), task3.s())
+task_chain = chain(task.s(), task1.s(), task2.s(), task3.s())
+
 app.autodiscover_tasks()
