@@ -41,19 +41,19 @@ services:
     restart: always
     build:
       context: .
-    command: celery --app=django_notification worker -l INFO -Q queue1
+    command: celery --app=django_notification worker -l INFO -Q celery,celery:1,celery:2,celery:3
     depends_on:
       - redis
       - django
 
-  celery2:
-    container_name: celery2
-    build:
-      context: ./celeryworker
-      dockerfile: Dockerfile
-    command: celery -A celeryworker worker -l INFO -Q queue2
-    volumes:
-      - ./celeryworker:/usr/src/app/
-    depends_on:
-      - redis
-      - django
+  # celery2:
+  #   container_name: celery2
+  #   build:
+  #     context: ./celeryworker
+  #     dockerfile: Dockerfile
+  #   command: celery -A celeryworker worker -l INFO -Q queue2
+  #   volumes:
+  #     - ./celeryworker:/usr/src/app/
+  #   depends_on:
+  #     - redis
+  #     - django
