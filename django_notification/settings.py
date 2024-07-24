@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'notification',
-    'channel'
+    'channel',
+    'newapp'
 ]
 
 MIDDLEWARE = [
